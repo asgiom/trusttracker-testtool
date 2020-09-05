@@ -3,19 +3,19 @@ const deasync = require("deasync");
 const rp = require('request-promise-native');
 const CryptoJS = require('crypto-js');
 const uuid = require('uuid');
-const apiEndpoint = 'http://localhost:3000';
+const apiEndpoint = 'http://localhost:3001';
 
 // Operator with simplified data storage
-const operatorID = '298008b2-a13a-4be2-b304-fe57d4894596';
-const apiKey = 'dadf00ba-8bb5-4596-8acc-a480898a7d17';
+// const operatorID = '298008b2-a13a-4be2-b304-fe57d4894596';
+// const apiKey = 'dadf00ba-8bb5-4596-8acc-a480898a7d17';
 
 // Operator with Full data storage
-// const operatorID = '99922320-a313-4005-8e8d-22fb397ab0e1';
-// const apiKey = 'a232c9da-d12b-43fa-abaa-6e59393be0e9';
+const operatorID = 'cb905a72-4024-4975-8dac-2ce9cf375cdc';
+const apiKey = '22aa883a-0b82-435a-9342-3f25bd28f437';
 
-const storeFullObject = false;
+const storeFullObject = true;
 
-const loopCounter = 55;
+const loopCounter = 2;
 const loopWaitMsec = 1000;
 
 // get session
@@ -40,6 +40,7 @@ Request.get(apiEndpoint + '/session/' + operatorID + '/start', (error, response,
         if(error) {
             return console.dir(error);
         }
+        console.log('Auth Body: ', body);
         // get the JWT Token from the login
         const jwtToken = JSON.parse(body)['X-API-JWT'];
         // execute the amount of defined loops
@@ -100,8 +101,9 @@ function convertBetToDelimitedSimple(bet) {
 }
 
 function convertBetToDelimitedFull(bet) {
+    const playerID = bet.PlayerID ? bet.PlayerID : '0';
     let result = bet.OperatorID + '|' + bet.BetSessionID + '|' + bet.BetID + '|';
-    result += bet.GameID + '|' + bet.Timestamp + '|' + bet.BetAmount + '|';
+    result += bet.GameID + '|' + playerID + '|' + bet.Timestamp + '|' + bet.BetAmount + '|';
     result += bet.WinAmount + '|' + bet.BetCurrency + '|' + bet.BonusRound + '|' + bet.Completed;
     return result;
 }
